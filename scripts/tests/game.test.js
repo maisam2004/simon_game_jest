@@ -4,7 +4,7 @@
 
 
 
-const {game,newGame} = require('../game');
+const {game,newGame,showScore} = require('../game');
 const { expect, beforeAll } = require('@jest/globals');
 //const { default: test } = require('node:test');
 
@@ -43,6 +43,7 @@ describe('newGame works correctly',()=>{
         game.score = 42;
         game.playerMove = ['button1',"button2"];
         game.currentGame = ['button1','button2'];
+        document.getElementById('score').innerHTML ='42';
         newGame();
     });
     test('newGame reset game score ',()=>{
@@ -55,6 +56,10 @@ describe('newGame works correctly',()=>{
     });
     test('newGame reset player moves',()=>{
         expect(game.playerMove.length).toBe(0);
+
+    });
+    test('should display 0 for element of id score',()=>{
+        expect(document.getElementById('score').innerText).toEqual(0);
 
     });
 
