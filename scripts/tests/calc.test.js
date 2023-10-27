@@ -9,7 +9,7 @@ describe('calculator testing  ',()=>{
     });
     describe('subtraction function',()=>{
         test('run subtraction to get 2 ',() => {
-            expect(subtraction(22,20)).toBe(2);
+            expect(subtraction(22,20)).toEqual(2);
         });
     });
 });
