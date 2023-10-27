@@ -5,5 +5,13 @@ let subtraction = ()=>{
     return 2;
 }
 
+let divide = ()=> {
+    return 2;
+};
 
-module.exports = [addition,subtraction];
+let multi = () =>{
+    return 2;
+};
+
+
+module.exports = [addition,subtraction,divide,multi];
