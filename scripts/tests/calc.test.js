@@ -1,5 +1,5 @@
 //const { TestScheduler } = require('jest');
-const [addition,subtraction,multi,divide ]= require('../calc');
+const [addition,subtraction,divide,multi]= require('../calc');
 
 describe('calculator testing  ',()=>{
     describe('Addition function',()=>{
@@ -12,14 +12,24 @@ describe('calculator testing  ',()=>{
             expect(subtraction(22,20)).toEqual(2);
         });
     });
-    describe('multi function',()=>{
-        test('run multi to get 2 ',() => {
-            expect(multi(22,20)).toEqual(2);
+    
+    describe('multi function', () => {
+        test('run multi to get 4 ', () => {
+            expect(multi(2, 2)).toBe(4);
         });
     });
-    describe('divide function',()=>{
-        test('run divide to get 2 ',() => {
-            expect(divide(22,20)).toEqual(2);
+    
+    describe('divide function', () => {
+        test('run divide to get 1 ', () => {
+            expect(divide(2, 2)).toBe(1);
         });
     });
+    
+
+
+    describe('to check error for string argument',() =>{
+        test('string argument ',()=>{
+            expect(addition('t',77)).toBe('Error')
+        })
+    })
 });
