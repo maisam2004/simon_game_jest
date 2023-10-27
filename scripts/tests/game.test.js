@@ -2,66 +2,123 @@
  * @jest-environment jsdom
  */
 
+const { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn } = require("../game");
 
+jest.spyOn(window, "alert").mockImplementation(() => { });
 
-const {game,newGame,showScore} = require('../game');
-const { expect, beforeAll } = require('@jest/globals');
-//const { default: test } = require('node:test');
-
-
-beforeAll(()=>{
-    let fs = require('fs');
-    let fileContentes = fs.readFileSync('index.html','utf-8');
+beforeAll(() => {
+    let fs = require("fs");
+    let fileContents = fs.readFileSync("index.html", "utf-8");
     document.open();
-    document.write(fileContentes);
+    document.write(fileContents);
     document.close();
-})
-//I want to create an object that will hold the  game state, which is going to be the score,  
-//current game sequence, player moves, and so on.
+});
 
-describe("game object contains correct keys",()=>{
-    test("score key exist",()=>{
-        expect('score' in game).toBe(true);
+describe("pre-game", () => {
+    test("clicking buttons before newGame should fail", () => {
+        game.lastButton = "";
+        document.getElementById("button2").click();
+        expect(game.lastButton).toEqual("");
     });
-    test("Current key exist",()=>{
-        expect('currentGame' in game).toBe(true);
+});
+
+describe("game object contains correct keys", () => {
+    test("score key exists", () => {
+        expect("score" in game).toBe(true);
     });
-    test('playerMoves exist',()=>{
-        expect('playerMove' in game).toBe(true);
-    })
+    test("currentGame key exists", () => {
+        expect("currentGame" in game).toBe(true);
+    });
+    test("playerMoves key exists", () => {
+        expect("playerMoves" in game).toBe(true);
+    });
+    test("choices key exists", () => {
+        expect("choices" in game).toBe(true);
+    });
+    test("choices contain correct ids", () => {
+        expect(game.choices).toEqual(["button1", "button2", "button3", "button4"]);
+    });
+    test("turnNumber key exists", () => {
+        expect("turnNumber" in game).toBe(true);
+    });
+    test("lastButton key exists", () => {
+        expect("lastButton" in game).toBe(true);
+    });
+    test("turnInProgress key exists", () => {
+        expect("turnInProgress" in game).toBe(true);
+    });
+    test("turnInProgress key value is false", () => {
+        expect("turnInProgress" in game).toBe(true);
+    });
+});
 
-    test('Choices exist',()=>{
-        expect('choices' in game).toBe(true);
-    })
-    test("choices contain correct IDs",() => {
-        expect(game.choices).toEqual(["button1","button2","button3","button4"]);
-    })
-})
-
-describe('newGame works correctly',()=>{
-    beforeAll(()=>{
+describe("newGame works correctly", () => {
+    beforeAll(() => {
         game.score = 42;
-        game.playerMove = ['button1',"button2"];
-        game.currentGame = ['button1','button2'];
-        document.getElementById('score').innerHTML ='42';
+        game.playerMoves = ["button1", "button2"];
+        game.currentGame = ["button1", "button2"];
+        document.getElementById("score").innerText = "42";
         newGame();
     });
-    test('newGame reset game score ',()=>{
-        expect(game.score).toBe(0);
-
+    test("expect data-listener to be true", () => {
+        const elements = document.getElementsByClassName("circle");
+        for (let element of elements) {
+            expect(element.getAttribute("data-listener")).toEqual("true");
+        }
     });
-    test('newGa,e reset current Game ',()=>{
-        expect(game.currentGame.length).toBe(0);
-
+    test("should set game score to zero", () => {
+        expect(game.score).toEqual(0);
     });
-    test('newGame reset player moves',()=>{
-        expect(game.playerMove.length).toBe(0);
-
+    test("should display 0 for the element with id of score", () => {
+        expect(document.getElementById("score").innerText).toEqual(0);
     });
-    test('should display 0 for element of id score',()=>{
-        expect(document.getElementById('score').innerText).toEqual(0);
-
+    test("should clear the player moves array", () => {
+        expect(game.playerMoves.length).toBe(0);
     });
+    test("should add one move to the computer's game array", () => {
+        expect(game.currentGame.length).toBe(1);
+    });
+});
 
-
+describe("gameplay works correctly", () => {
+    beforeEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+        addTurn();
+    });
+    afterEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+    });
+    test("addTurn adds a new turn to the game", () => {
+        addTurn();
+        expect(game.currentGame.length).toBe(2);
+    });
+    test("should add correct class to light up the buttons", () => {
+        let button = document.getElementById(game.currentGame[0]);
+        lightsOn(game.currentGame[0]);
+        expect(button.classList).toContain("light");
+    });
+    test("should toggle turnInProgress to true", () => {
+        showTurns();
+        expect(game.turnInProgress).toBe(true);
+    });
+    test("showTurns should update game.turnNumber", () => {
+        game.turnNumber = 42;
+        showTurns();
+        expect(game.turnNumber).toBe(0);
+    });
+    test("should increment the score if the turn is correct", () => {
+        game.playerMoves.push(game.currentGame[0]);
+        playerTurn();
+        expect(game.score).toBe(1);
+    });
+    test("clicking during computer sequence should fail", () => {
+        showTurns();
+        game.lastButton = "";
+        document.getElementById("button2").click();
+        expect(game.lastButton).toEqual("");
+    });
 });
