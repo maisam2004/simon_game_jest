@@ -29,7 +29,13 @@ describe('calculator testing  ',()=>{
 
     describe('to check error for string argument',() =>{
         test('string argument ',()=>{
-            expect(addition('t',77)).toBe('Error')
-        })
-    })
+            expect(addition('t',77)).toBe('Error');
+        });
+        test('empty string value handling',()=>{
+            expect(multi('',77)).toBe('Error');
+        });
+        test('array value check for multi',()=>{
+            expect(multi([77],77)).toBe('Error');
+        });
+    });
 });
